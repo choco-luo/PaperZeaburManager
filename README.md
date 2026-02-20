@@ -1,4 +1,6 @@
+專案環境:
 PaperMC
+
 Zeabur
 
-+ Docker
+可選項: Docker
