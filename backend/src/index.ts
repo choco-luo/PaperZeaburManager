@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 const JAR_PATH = process.env.JAR_PATH || '/mc/papermc.jar';
 const WORK_DIR = process.env.WORK_DIR || '/mc';
 
-// 健康檢查 endpoint（Zeabur 需要）
+// health check endpoint（Zeabur 需要）
 app.get('/health', (_, res) => {
   res.json({ status: 'ok', mcRunning: ptyManager.getStatus() });
 });
