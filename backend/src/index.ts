@@ -1,12 +1,28 @@
-import express from 'express'
+import express from 'express';
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
+import { ptyManager } from './ptyManager';
+import { setupWebSocket } from './wsHandler';
 
-const app = express()
-const port = 3000
+const app = express();
+const server = createServer(app);
+const wss = new WebSocketServer({ server });
 
-app.get('/', (req, res) => {
-  res.send('Hello World')
-})
+const PORT = process.env.PORT || 3000;
+const JAR_PATH = process.env.JAR_PATH || '/mc/papermc.jar';
+const WORK_DIR = process.env.WORK_DIR || '/mc';
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`)
-})
+// 健康檢查 endpoint（Zeabur 需要）
+app.get('/health', (_, res) => {
+  res.json({ status: 'ok', mcRunning: ptyManager.getStatus() });
+});
+
+// 啟動 WebSocket 處理
+setupWebSocket(wss);
+
+// 啟動伺服器
+server.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
+  // 啟動 PaperMC
+  ptyManager.start(JAR_PATH, WORK_DIR);
+});
