@@ -7,8 +7,8 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\""
-"dev:frontend": "npm run dev -w frontend",
+    "dev": "concurrently 'npm run dev -w frontend' 'npm run dev -w backend'",
+    "dev:frontend": "npm run dev -w frontend",
     "dev:backend": "npm run dev -w backend"
   },
   "engines": {
