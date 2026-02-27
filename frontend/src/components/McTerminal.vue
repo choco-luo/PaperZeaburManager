@@ -38,7 +38,11 @@ onMounted(() => {
   term.open(terminalRef.value!)
   fitAddon.fit()
 
-  term.onData((data) => sendInput(data))
+  term.onData((data) => {
+  // 攔截終端執行時 Ctrl+C (字元碼 \x03)
+  if (data === '\x03') return
+  sendInput(data)
+})
 
   onMessage((msg) => {
     if (msg.type === 'output') {
