@@ -1,0 +1,13 @@
+services:
+  mc-backend:
+    build: .
+    ports:
+      - "3000:3000"
+      - "25565:25565"
+    volumes:
+      # 把你本地的 MC 資料夾掛進容器
+      - ./mc-data:/mc
+    environment:
+      JAR_PATH: /mc/papermc.jar
+      WORK_DIR: /mc
+      PORT: 3000
