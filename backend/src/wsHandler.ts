@@ -1,8 +1,9 @@
 import { WebSocket, WebSocketServer } from 'ws';
+import { IncomingMessage } from 'http';
 import { ptyManager } from './ptyManager';
+import { verifyToken } from './auth';
 
 export function setupWebSocket(wss: WebSocketServer) {
-  // PTY 有輸出時，廣播給所有連線的客戶端
   ptyManager.on('output', (data: string) => {
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -11,10 +12,20 @@ export function setupWebSocket(wss: WebSocketServer) {
     });
   });
 
-  wss.on('connection', (ws: WebSocket) => {
+  wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+    // 從 URL 參數取得 token
+    // ws://backend/ws?token=xxx
+    const url = new URL(req.url || '', 'http://localhost');
+    const token = url.searchParams.get('token');
+
+    if (!token || !verifyToken(token)) {
+      ws.send(JSON.stringify({ type: 'error', message: '未授權' }));
+      ws.close();
+      return;
+    }
+
     console.log('Client connected');
 
-    // 送出目前伺服器狀態
     ws.send(JSON.stringify({
       type: 'status',
       running: ptyManager.getStatus()
@@ -23,15 +34,11 @@ export function setupWebSocket(wss: WebSocketServer) {
     ws.on('message', (raw: Buffer) => {
       try {
         const msg = JSON.parse(raw.toString());
-
         switch (msg.type) {
           case 'input':
-            // 前端送來的鍵盤輸入
             ptyManager.sendCommand(msg.data);
             break;
-
           case 'resize':
-            // 前端視窗大小改變
             ptyManager.resize(msg.cols, msg.rows);
             break;
         }
