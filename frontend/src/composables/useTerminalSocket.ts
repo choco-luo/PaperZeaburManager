@@ -11,7 +11,8 @@ export function useTerminalSocket(url: string) {
   const listeners = new Set<(msg: WsMessage) => void>()
 
   function connect() {
-    ws.value = new WebSocket(url)
+    const token = localStorage.getItem('token') || ''
+    ws.value = new WebSocket(`${url}?token=${token}`)
 
     ws.value.onopen = () => {
       isConnected.value = true
