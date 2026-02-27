@@ -12,10 +12,10 @@ v0.7
 ## 📦v0.7架設方式
 1. 準備好需要使用的伺服器檔案(Bukkit、Spigot、Paper、Fabric...)
 
-2. Zeabur 購買一台4CPU | 8GB的專有主機
-免費方案目前已經不再開放，而且硬體配置會不夠把Minecraft Server開起來。
-(PZM完全針對使用Zeabur架設的情況，其他VPS服務不保證能使用)
+2. Zeabur 購買一台2vCPU | 8GB的專有主機
 
-Zeabur
+> 硬體配置會不夠把Minecraft Server開起來。
+>
+> (PZM完全針對使用Zeabur架設的情況，不維護其他平台的運作)
 
 可選項: Docker
