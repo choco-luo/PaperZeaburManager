@@ -13,8 +13,6 @@ export function setupWebSocket(wss: WebSocketServer) {
   });
 
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
-    // 從 URL 參數取得 token
-    // ws://backend/ws?token=xxx
     const url = new URL(req.url || '', 'http://localhost');
     const token = url.searchParams.get('token');
 
@@ -25,6 +23,12 @@ export function setupWebSocket(wss: WebSocketServer) {
     }
 
     console.log('Client connected');
+
+    // 補發歷史 log
+    const buffer = ptyManager.getBuffer();
+    if (buffer.length > 0) {
+      ws.send(JSON.stringify({ type: 'output', data: buffer.join('') }));
+    }
 
     ws.send(JSON.stringify({
       type: 'status',

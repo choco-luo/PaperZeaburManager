@@ -4,6 +4,8 @@ import { EventEmitter } from 'events';
 class PtyManager extends EventEmitter {
   private shell: pty.IPty | null = null;
   private isRunning = false;
+  private logBuffer: string[] = [];
+  private readonly MAX_BUFFER = 1000;
 
   start(jarPath: string, workDir: string) {
     if (this.isRunning) return;
@@ -22,8 +24,11 @@ class PtyManager extends EventEmitter {
 
     this.isRunning = true;
 
-    // 收到輸出 → 發事件給所有 WS 客戶端
     this.shell.onData((data: string) => {
+      this.logBuffer.push(data);
+      if (this.logBuffer.length > this.MAX_BUFFER) {
+        this.logBuffer.shift();
+      }
       this.emit('output', data);
     });
 
@@ -31,9 +36,12 @@ class PtyManager extends EventEmitter {
       console.log(`PaperMC exited with code ${exitCode}`);
       this.isRunning = false;
       this.shell = null;
-      // 10 秒後自動重啟
       setTimeout(() => this.start(jarPath, workDir), 10000);
     });
+  }
+
+  getBuffer() {
+    return this.logBuffer;
   }
 
   sendCommand(input: string) {
