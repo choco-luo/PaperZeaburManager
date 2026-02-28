@@ -12,6 +12,15 @@ export function setupWebSocket(wss: WebSocketServer) {
     });
   });
 
+  // 推送即時狀態給所有客戶端
+  ptyManager.on('stats', (stats) => {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ type: 'stats', data: stats }));
+      }
+    });
+  });
+
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     const url = new URL(req.url || '', 'http://localhost');
     const token = url.searchParams.get('token');
@@ -30,10 +39,9 @@ export function setupWebSocket(wss: WebSocketServer) {
       ws.send(JSON.stringify({ type: 'output', data: buffer.join('') }));
     }
 
-    ws.send(JSON.stringify({
-      type: 'status',
-      running: ptyManager.getStatus()
-    }));
+    // 推送目前狀態
+    ws.send(JSON.stringify({ type: 'status', running: ptyManager.getStatus() }));
+    ws.send(JSON.stringify({ type: 'stats', data: ptyManager.getStats() }));
 
     ws.on('message', (raw: Buffer) => {
       try {
