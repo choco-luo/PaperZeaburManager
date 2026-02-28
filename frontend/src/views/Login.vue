@@ -37,7 +37,7 @@ async function handleLogin() {
     }
 
     localStorage.setItem('token', data.token)
-    router.push('/terminal')
+    router.push('/dashboard')
   } catch (e) {
     error.value = '無法連線到伺服器'
   } finally {
