@@ -3,7 +3,7 @@ import McTerminal from '@/components/McTerminal.vue'
 </script>
 
 <template>
-  <div class="w-screen h-screen bg-[#141517]" style="padding: 16px; box-sizing: border-box;">
+  <div class="h-full">
     <McTerminal />
   </div>
 </template>
