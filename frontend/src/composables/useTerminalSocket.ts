@@ -3,11 +3,14 @@ import { ref, onUnmounted } from 'vue'
 export type WsMessage =
   | { type: 'output'; data: string }
   | { type: 'status'; running: boolean }
+  | { type: 'stats'; data: { tps: string; players: string; memory: string } }
+  | { type: 'error'; message: string }
 
 export function useTerminalSocket(url: string) {
   const ws = ref<WebSocket | null>(null)
   const isConnected = ref(false)
   const isServerRunning = ref(false)
+  const stats = ref({ tps: '--', players: '--', memory: '--' })
   const listeners = new Set<(msg: WsMessage) => void>()
 
   function connect() {
@@ -16,7 +19,6 @@ export function useTerminalSocket(url: string) {
 
     ws.value.onopen = () => {
       isConnected.value = true
-      console.log('WebSocket connected')
     }
 
     ws.value.onmessage = (event) => {
@@ -24,6 +26,9 @@ export function useTerminalSocket(url: string) {
         const msg: WsMessage = JSON.parse(event.data)
         if (msg.type === 'status') {
           isServerRunning.value = msg.running
+        }
+        if (msg.type === 'stats') {
+          stats.value = msg.data
         }
         listeners.forEach((fn) => fn(msg))
       } catch (e) {
@@ -33,7 +38,6 @@ export function useTerminalSocket(url: string) {
 
     ws.value.onclose = () => {
       isConnected.value = false
-      // 3 秒後自動重連
       setTimeout(connect, 3000)
     }
 
@@ -65,5 +69,5 @@ export function useTerminalSocket(url: string) {
 
   connect()
 
-  return { isConnected, isServerRunning, sendInput, sendResize, onMessage }
+  return { isConnected, isServerRunning, stats, sendInput, sendResize, onMessage }
 }

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Server, Terminal, Users, FolderOpen, Plug, Download, Upload, LogOut } from 'lucide-vue-next'
+import { useTerminalSocket } from '@/composables/useTerminalSocket'
 import TerminalPanel from '@/components/panels/TerminalPanel.vue'
 import PlayersPanel from '@/components/panels/PlayersPanel.vue'
 import FilesPanel from '@/components/panels/FilesPanel.vue'
@@ -11,6 +12,9 @@ import UploadPanel from '@/components/panels/UploadPanel.vue'
 
 const router = useRouter()
 const activePanel = ref('terminal')
+
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3000'
+const { isConnected, isServerRunning, stats, sendInput, sendResize, onMessage } = useTerminalSocket(WS_URL)
 
 const navItems = [
   { id: 'terminal', label: '終端機', icon: Terminal },
@@ -40,8 +44,13 @@ function logout() {
             <h1 class="text-xl tracking-wide" style="color: #F8F9F9;">PZM</h1>
           </div>
           <div class="flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full bg-green-400"></span>
-            <span class="text-sm" style="color: #DEE3E2;">Running</span>
+            <span
+              class="inline-block w-2 h-2 rounded-full"
+              :style="{ background: isServerRunning ? '#51cf66' : '#fcc419' }"
+            ></span>
+            <span class="text-sm" style="color: #DEE3E2;">
+              {{ isServerRunning ? 'Running' : 'Starting...' }}
+            </span>
           </div>
         </div>
 
@@ -70,15 +79,15 @@ function logout() {
           <div class="flex gap-6">
             <div class="flex items-center gap-2">
               <span class="text-sm" style="color: #4F5158;">TPS:</span>
-              <span class="text-sm" style="color: #7B8791;">--</span>
+              <span class="text-sm" style="color: #7B8791;">{{ stats.tps }}</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm" style="color: #4F5158;">玩家:</span>
-              <span class="text-sm" style="color: #7B8791;">--</span>
+              <span class="text-sm" style="color: #7B8791;">{{ stats.players }}</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm" style="color: #4F5158;">記憶體:</span>
-              <span class="text-sm" style="color: #7B8791;">--</span>
+              <span class="text-sm" style="color: #7B8791;">{{ stats.memory }}</span>
             </div>
           </div>
           <button
@@ -94,7 +103,14 @@ function logout() {
         <!-- 內容區 -->
         <div class="flex-1 overflow-hidden p-8">
           <div class="h-full rounded-xl overflow-hidden shadow-inner" style="background: #F8F9F9;">
-            <TerminalPanel v-if="activePanel === 'terminal'" />
+            <TerminalPanel
+              v-if="activePanel === 'terminal'"
+              :isConnected="isConnected"
+              :isServerRunning="isServerRunning"
+              :sendInput="sendInput"
+              :sendResize="sendResize"
+              :onMessage="onMessage"
+            />
             <PlayersPanel v-else-if="activePanel === 'players'" />
             <FilesPanel v-else-if="activePanel === 'files'" />
             <PluginsPanel v-else-if="activePanel === 'plugins'" />

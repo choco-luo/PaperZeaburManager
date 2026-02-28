@@ -3,26 +3,30 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import { WebLinksAddon } from '@xterm/addon-web-links'
-import { useTerminalSocket } from '@/composables/useTerminalSocket'
+import type { WsMessage } from '@/composables/useTerminalSocket'
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3000'
+const props = defineProps<{
+  isConnected: boolean
+  isServerRunning: boolean
+  sendInput: (data: string) => void
+  sendResize: (cols: number, rows: number) => void
+  onMessage: (fn: (msg: WsMessage) => void) => () => void
+}>()
 
 const terminalRef = ref<HTMLDivElement | null>(null)
-
-const { isConnected, isServerRunning, sendInput, sendResize, onMessage } =
-  useTerminalSocket(WS_URL)
 
 let term: Terminal
 let fitAddon: FitAddon
 let resizeObserver: ResizeObserver
+let unsubscribe: (() => void) | null = null
 
 onMounted(() => {
   term = new Terminal({
     theme: {
-      background: '#1a1b1e',
-      foreground: '#d4d4d4',
-      cursor: '#ffffff',
-      selectionBackground: '#264f78',
+      background: '#4F5158',
+      foreground: '#F8F9F9',
+      cursor: '#F8F9F9',
+      selectionBackground: '#7B8791',
     },
     fontFamily: '"JetBrains Mono", "Fira Code", monospace',
     fontSize: 14,
@@ -39,12 +43,11 @@ onMounted(() => {
   fitAddon.fit()
 
   term.onData((data) => {
-  // 攔截終端執行時 Ctrl+C (字元碼 \x03)
-  if (data === '\x03') return
-  sendInput(data)
-})
+    if (data === '\x03') return
+    props.sendInput(data)
+  })
 
-  onMessage((msg) => {
+  unsubscribe = props.onMessage((msg) => {
     if (msg.type === 'output') {
       term.write(msg.data)
     }
@@ -52,7 +55,7 @@ onMounted(() => {
 
   resizeObserver = new ResizeObserver(() => {
     fitAddon.fit()
-    sendResize(term.cols, term.rows)
+    props.sendResize(term.cols, term.rows)
   })
   resizeObserver.observe(terminalRef.value!)
 })
@@ -60,27 +63,28 @@ onMounted(() => {
 onUnmounted(() => {
   resizeObserver?.disconnect()
   term?.dispose()
+  unsubscribe?.()
 })
 </script>
 
 <template>
-  <div class="flex flex-col h-full rounded-lg overflow-hidden" style="background: #1a1b1e; border: 1px solid #DEE3E2;">
+  <div class="flex flex-col h-full">
     <!-- 狀態列 -->
-    <div class="flex items-center text-xs" style="gap: 6px; padding: 6px 12px; background: #25262b; border-bottom: 1px solid #2e2f33; color: #868e96;">
+    <div class="flex items-center gap-2 px-4 py-3" style="border-bottom: 1px solid #DEE3E2;">
       <span
         class="inline-block w-2 h-2 rounded-full"
         :style="{ background: isConnected ? '#51cf66' : '#ff6b6b' }"
       />
-      <span>{{ isConnected ? 'Connected' : 'Reconnecting...' }}</span>
-      <span style="margin: 0 4px; color: #444;">|</span>
+      <span class="text-xs" style="color: #7B8791;">{{ isConnected ? 'Connected' : 'Reconnecting...' }}</span>
+      <span class="text-xs" style="color: #B6C8CF;">|</span>
       <span
         class="inline-block w-2 h-2 rounded-full"
         :style="{ background: isServerRunning ? '#51cf66' : '#fcc419' }"
       />
-      <span>PaperMC {{ isServerRunning ? 'Running' : 'Starting...' }}</span>
+      <span class="text-xs" style="color: #7B8791;">PaperMC {{ isServerRunning ? 'Running' : 'Starting...' }}</span>
     </div>
 
     <!-- 終端機本體 -->
-    <div ref="terminalRef" class="flex-1 overflow-hidden" style="padding: 8px;" />
+    <div ref="terminalRef" class="flex-1 overflow-hidden rounded-b-xl" style="padding: 12px; background: #4F5158;" />
   </div>
 </template>
