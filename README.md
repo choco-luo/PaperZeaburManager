@@ -2,7 +2,7 @@ PZM v0.7
 
 正在持續迭代中，這個版本的包裝方式會稍微複雜一點，建議詢問有環境建置經驗的人再使用，於v1.0正式版會變更新這些操作方式。
 
-<img width="1744" height="1158" alt="pzm_concept_ui" src="https://github.com/user-attachments/assets/7d2b97db-3a47-48fe-bc0b-9695552a90ca" />
+<img width="1699" height="1172" alt="000234" src="https://github.com/user-attachments/assets/264200da-d7d1-4a2e-b1e7-defecb4e69b5" />
 ---
 
 ## 📦v0.7架設方式
