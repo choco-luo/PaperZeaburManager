@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import cors from 'cors';
+import 'dotenv/config'
 import { ptyManager } from './ptyManager';
 import { setupWebSocket } from './wsHandler';
 import loginRouter from './loginRouter';
@@ -26,9 +27,14 @@ app.get('/health', (_, res) => {
 setupWebSocket(wss);
 
 server.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
-  ptyManager.start(
-    process.env.JAR_PATH || '/mc/paper-1.21.11-113.jar',
-    process.env.WORK_DIR || '/mc'
-  );
+  console.log(`Backend running on port ${PORT}`)
+  
+  // 只有在有 jar 檔的情況下才啟動 PaperMC
+  const fs = require('fs')
+  const jarPath = process.env.JAR_PATH || '/mc/paper-1.21.11-113.jar'
+  if (fs.existsSync(jarPath)) {
+    ptyManager.start(jarPath, process.env.WORK_DIR || '/mc')
+  } else {
+    console.log('沒有找到JAR檔, 跳過PaperMC start (local dev mode)')
+  }
 });

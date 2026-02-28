@@ -15,12 +15,10 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to) => {
   const token = localStorage.getItem('token')
   if (to.meta.requiresAuth && !token) {
-    next('/login')
-  } else {
-    next()
+    return '/login'
   }
 })
 
