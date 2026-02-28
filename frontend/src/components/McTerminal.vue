@@ -64,7 +64,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full rounded-lg overflow-hidden" style="background: #1a1b1e; border: 1px solid #2e2f33;">
+  <div class="flex flex-col h-full rounded-lg overflow-hidden" style="background: #1a1b1e; border: 1px solid #DEE3E2;">
     <!-- 狀態列 -->
     <div class="flex items-center text-xs" style="gap: 6px; padding: 6px 12px; background: #25262b; border-bottom: 1px solid #2e2f33; color: #868e96;">
       <span
