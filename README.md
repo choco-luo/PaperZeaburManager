@@ -1,4 +1,4 @@
-PZM v1.0
+## PaperZeaburManager(PZM) | v1.0
 
 在經過數次測試Zeabur環境如何搭建管理Minecraft Server後，PZM已經可以正式公布使用。
 
