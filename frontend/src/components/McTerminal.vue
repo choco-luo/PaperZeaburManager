@@ -23,10 +23,10 @@ let unsubscribe: (() => void) | null = null
 onMounted(() => {
   term = new Terminal({
     theme: {
-      background: '#4F5158',
-      foreground: '#F8F9F9',
-      cursor: '#F8F9F9',
-      selectionBackground: '#7B8791',
+      background: '#1a1b1e',
+      foreground: '#d4d4d4',
+      cursor: '#ffffff',
+      selectionBackground: '#264f78',
     },
     fontFamily: '"JetBrains Mono", "Fira Code", monospace',
     fontSize: 14,

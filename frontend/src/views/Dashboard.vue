@@ -101,22 +101,20 @@ function logout() {
         </header>
 
         <!-- 內容區 -->
-        <div class="flex-1 overflow-hidden p-8">
-          <div class="h-full rounded-xl overflow-hidden shadow-inner" style="background: #F8F9F9;">
-            <TerminalPanel
-              v-if="activePanel === 'terminal'"
-              :isConnected="isConnected"
-              :isServerRunning="isServerRunning"
-              :sendInput="sendInput"
-              :sendResize="sendResize"
-              :onMessage="onMessage"
-            />
-            <PlayersPanel v-else-if="activePanel === 'players'" />
-            <FilesPanel v-else-if="activePanel === 'files'" />
-            <PluginsPanel v-else-if="activePanel === 'plugins'" />
-            <BackupPanel v-else-if="activePanel === 'backup'" />
-            <UploadPanel v-else-if="activePanel === 'upload'" />
-          </div>
+        <div class="h-full rounded-xl overflow-hidden shadow-inner" style="background: #F8F9F9;">
+          <TerminalPanel
+          v-show="activePanel === 'terminal'"
+          :isConnected="isConnected"
+          :isServerRunning="isServerRunning"
+          :sendInput="sendInput"
+          :sendResize="sendResize"
+          :onMessage="onMessage"
+          />
+          <PlayersPanel v-show="activePanel === 'players'" />
+          <FilesPanel v-show="activePanel === 'files'" />
+          <PluginsPanel v-show="activePanel === 'plugins'" />
+          <BackupPanel v-show="activePanel === 'backup'" />
+          <UploadPanel v-show="activePanel === 'upload'" />
         </div>
       </main>
 
