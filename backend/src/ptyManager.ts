@@ -8,11 +8,11 @@ class PtyManager extends EventEmitter {
   private readonly MAX_BUFFER = 1000;
   private statsInterval: NodeJS.Timeout | null = null;
 
-  // 伺服器狀態
   private stats = {
     tps: '--' as string,
     players: '--' as string,
     memory: '--' as string,
+    playerList: [] as string[],
   };
 
   start(jarPath: string, workDir: string) {
@@ -45,7 +45,7 @@ class PtyManager extends EventEmitter {
       console.log(`PaperMC exited with code ${exitCode}`);
       this.isRunning = false;
       this.shell = null;
-      this.stats = { tps: '--', players: '--', memory: '--' };
+      this.stats = { tps: '--', players: '--', memory: '--', playerList: [] };
       if (this.statsInterval) {
         clearInterval(this.statsInterval);
         this.statsInterval = null;
@@ -54,7 +54,6 @@ class PtyManager extends EventEmitter {
       setTimeout(() => this.start(jarPath, workDir), 10000);
     });
 
-    // 每 10 秒查詢一次狀態
     this.statsInterval = setInterval(() => {
       if (this.isRunning) {
         this.shell?.write('tps\r');
@@ -64,21 +63,31 @@ class PtyManager extends EventEmitter {
   }
 
   private parseStats(data: string) {
-    // 解析 TPS: §a20.0, §a20.0, §a20.0
+    // 解析 TPS
     const tpsMatch = data.match(/TPS from last 1m, 5m, 15m: [\§a-z]*(\d+\.?\d*)/i);
     if (tpsMatch) {
       this.stats.tps = parseFloat(tpsMatch[1]).toFixed(1);
       this.emit('stats', this.stats);
     }
 
-    // 解析玩家數: There are 2 of a max of 20 players online
-    const playersMatch = data.match(/There are (\d+) of a max of (\d+) players/i);
+    // 解析玩家數
+    const playersMatch = data.match(/There are (\d+) of a max of (\d+) players online/);
     if (playersMatch) {
       this.stats.players = `${playersMatch[1]}/${playersMatch[2]}`;
+      const namesPart = data.split(':').slice(-1)[0];
+      if (namesPart && namesPart.trim().length > 0) {
+        this.stats.playerList = namesPart
+          .trim()
+          .split(',')
+          .map(n => n.trim())
+          .filter(n => n.length > 0);
+      } else {
+        this.stats.playerList = [];
+      }
       this.emit('stats', this.stats);
     }
 
-    // 解析記憶體（從 JVM 輸出抓）
+    // 解析記憶體
     const memMatch = data.match(/(\d+)\/(\d+) MB/i);
     if (memMatch) {
       this.stats.memory = `${memMatch[1]}MB`;

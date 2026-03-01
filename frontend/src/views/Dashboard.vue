@@ -110,11 +110,11 @@ function logout() {
           :sendResize="sendResize"
           :onMessage="onMessage"
           />
-          <PlayersPanel v-show="activePanel === 'players'" />
-          <FilesPanel v-show="activePanel === 'files'" />
-          <PluginsPanel v-show="activePanel === 'plugins'" />
-          <BackupPanel v-show="activePanel === 'backup'" />
-          <UploadPanel v-show="activePanel === 'upload'" />
+          <PlayersPanel
+          v-show="activePanel === 'players'"
+          :playerList="stats.playerList"
+          :players="stats.players"
+          />
         </div>
       </main>
 

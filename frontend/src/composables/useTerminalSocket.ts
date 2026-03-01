@@ -3,14 +3,14 @@ import { ref, onUnmounted } from 'vue'
 export type WsMessage =
   | { type: 'output'; data: string }
   | { type: 'status'; running: boolean }
-  | { type: 'stats'; data: { tps: string; players: string; memory: string } }
+  | { type: 'stats'; data: { tps: string; players: string; memory: string; playerList: string[] } }
   | { type: 'error'; message: string }
 
 export function useTerminalSocket(url: string) {
   const ws = ref<WebSocket | null>(null)
   const isConnected = ref(false)
   const isServerRunning = ref(false)
-  const stats = ref({ tps: '--', players: '--', memory: '--' })
+  const stats = ref({ tps: '--', players: '--', memory: '--', playerList: [] as string[] })
   const listeners = new Set<(msg: WsMessage) => void>()
 
   function connect() {
