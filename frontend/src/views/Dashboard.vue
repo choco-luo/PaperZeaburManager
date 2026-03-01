@@ -101,7 +101,11 @@ function logout() {
           />
           <FilesPanel v-show="activePanel === 'files'" />
           <BackupPanel v-show="activePanel === 'backup'" />
-          <UploadPanel v-show="activePanel === 'upload'" />
+          <UploadPanel
+            v-show="activePanel === 'upload'"
+            :isServerRunning="isServerRunning"
+            @switch-panel="activePanel = $event"
+          />
         </div>
       </main>
 
