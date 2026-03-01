@@ -6,7 +6,6 @@ class PtyManager extends EventEmitter {
   private isRunning = false;
   private logBuffer: string[] = [];
   private readonly MAX_BUFFER = 1000;
-  private statsInterval: NodeJS.Timeout | null = null;
 
   private stats = {
     tps: '--' as string,
