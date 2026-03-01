@@ -101,6 +101,10 @@ function logout() {
           :playerList="stats.playerList"
           :players="stats.players"
           />
+          <FilesPanel v-show="activePanel === 'files'" />
+          <PluginsPanel v-show="activePanel === 'plugins'" />
+          <BackupPanel v-show="activePanel === 'backup'" />
+          <UploadPanel v-show="activePanel === 'upload'" />
         </div>
       </main>
 
