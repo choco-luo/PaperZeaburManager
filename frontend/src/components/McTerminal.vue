@@ -81,10 +81,10 @@ onUnmounted(() => {
         class="inline-block w-2 h-2 rounded-full"
         :style="{ background: isServerRunning ? '#51cf66' : '#fcc419' }"
       />
-      <span class="text-xs" style="color: #7B8791;">PaperMC {{ isServerRunning ? 'Running' : 'Starting...' }}</span>
+      <span class="text-xs" style="color: #7B8791;">PaperMC {{ isServerRunning ? 'Running' : 'Stopped' }}</span>
     </div>
 
     <!-- 終端機本體 -->
-    <div ref="terminalRef" class="flex-1 overflow-hidden rounded-b-xl" style="padding: 12px; background: #4F5158;" />
+    <div ref="terminalRef" class="flex-1 overflow-hidden rounded-b-xl" style="padding: 12px; background: white;" />
   </div>
 </template>

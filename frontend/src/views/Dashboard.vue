@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Server, Terminal, Users, FolderOpen, Download, Upload, LogOut } from 'lucide-vue-next'
 import { useTerminalSocket } from '@/composables/useTerminalSocket'
-import TerminalPanel from '@/components/panels/TerminalPanel.vue'
+import McTerminal from '@/components/McTerminal.vue'
 import PlayersPanel from '@/components/panels/PlayersPanel.vue'
 import FilesPanel from '@/components/panels/FilesPanel.vue'
 import BackupPanel from '@/components/panels/BackupPanel.vue'
@@ -47,7 +47,7 @@ function logout() {
               :style="{ background: isServerRunning ? '#51cf66' : '#fcc419' }"
             ></span>
             <span class="text-sm" style="color: #DEE3E2;">
-              {{ isServerRunning ? 'Running' : 'Starting...' }}
+              {{ isServerRunning ? 'Running' : 'Stopped' }}
             </span>
           </div>
         </div>
@@ -85,8 +85,8 @@ function logout() {
         </header>
 
         <!-- 內容區 -->
-        <div class="h-full rounded-xl overflow-hidden shadow-inner" style="background: #F8F9F9;">
-          <TerminalPanel
+        <div class="flex-1 rounded-xl overflow-hidden shadow-inner mx-4 mb-4" style="background: #F8F9F9;">
+          <McTerminal
           v-show="activePanel === 'terminal'"
           :isConnected="isConnected"
           :isServerRunning="isServerRunning"
