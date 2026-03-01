@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Server, Terminal, Users, FolderOpen, Plug, Download, Upload, LogOut } from 'lucide-vue-next'
+import { Server, Terminal, Users, FolderOpen, Download, Upload, LogOut } from 'lucide-vue-next'
 import { useTerminalSocket } from '@/composables/useTerminalSocket'
 import TerminalPanel from '@/components/panels/TerminalPanel.vue'
 import PlayersPanel from '@/components/panels/PlayersPanel.vue'
 import FilesPanel from '@/components/panels/FilesPanel.vue'
-import PluginsPanel from '@/components/panels/PluginsPanel.vue'
 import BackupPanel from '@/components/panels/BackupPanel.vue'
 import UploadPanel from '@/components/panels/UploadPanel.vue'
 
@@ -20,7 +19,6 @@ const navItems = [
   { id: 'terminal', label: '終端機', icon: Terminal },
   { id: 'players', label: '玩家列表', icon: Users },
   { id: 'files', label: '檔案管理', icon: FolderOpen },
-  { id: 'plugins', label: 'Plugin 設定', icon: Plug },
   { id: 'backup', label: '備份下載', icon: Download },
   { id: 'upload', label: '上傳伺服器包', icon: Upload },
 ]
@@ -102,7 +100,6 @@ function logout() {
           :players="stats.players"
           />
           <FilesPanel v-show="activePanel === 'files'" />
-          <PluginsPanel v-show="activePanel === 'plugins'" />
           <BackupPanel v-show="activePanel === 'backup'" />
           <UploadPanel v-show="activePanel === 'upload'" />
         </div>
