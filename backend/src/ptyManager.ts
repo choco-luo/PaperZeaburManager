@@ -46,20 +46,9 @@ class PtyManager extends EventEmitter {
       this.isRunning = false;
       this.shell = null;
       this.stats = { tps: '--', players: '--', memory: '--', playerList: [] };
-      if (this.statsInterval) {
-        clearInterval(this.statsInterval);
-        this.statsInterval = null;
-      }
       this.emit('exit', exitCode);
       setTimeout(() => this.start(jarPath, workDir), 10000);
     });
-
-    this.statsInterval = setInterval(() => {
-      if (this.isRunning) {
-        this.shell?.write('tps\r');
-        this.shell?.write('list\r');
-      }
-    }, 10000);
   }
 
   private parseStats(data: string) {
