@@ -2,10 +2,13 @@ import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import cors from 'cors';
+import fs from 'fs';
 import 'dotenv/config'
 import { ptyManager } from './ptyManager';
 import { setupWebSocket } from './wsHandler';
 import loginRouter from './loginRouter';
+import filesRouter from './filesRouter';
+import { verifyToken } from './auth';
 
 const app = express();
 const server = createServer(app);
@@ -18,7 +21,20 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+// token 驗證 middleware
+function authMiddleware(req: any, res: any, next: any) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(' ')[1];
+  if (!token || !verifyToken(token)) {
+    res.status(401).json({ error: '未授權' });
+    return;
+  }
+  next();
+}
+
 app.use('/api', loginRouter);
+app.use('/api', authMiddleware, filesRouter);
 
 app.get('/health', (_, res) => {
   res.json({ status: 'ok', mcRunning: ptyManager.getStatus() });
@@ -29,8 +45,6 @@ setupWebSocket(wss);
 server.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`)
   
-  // 只有在有 jar 檔的情況下才啟動 PaperMC
-  const fs = require('fs')
   const jarPath = process.env.JAR_PATH || '/mc/paper-1.21.11-113.jar'
   if (fs.existsSync(jarPath)) {
     ptyManager.start(jarPath, process.env.WORK_DIR || '/mc')
