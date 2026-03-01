@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 class PtyManager extends EventEmitter {
   private shell: pty.IPty | null = null;
   private isRunning = false;
+  private manuallyStopped = false;
   private logBuffer: string[] = [];
   private readonly MAX_BUFFER = 1000;
 
@@ -14,6 +15,7 @@ class PtyManager extends EventEmitter {
 
   start(jarPath: string, workDir: string) {
     if (this.isRunning) return;
+    this.manuallyStopped = false;
 
     this.shell = pty.spawn('java', [
       '-Xmx2G', '-Xms1G',
@@ -28,6 +30,7 @@ class PtyManager extends EventEmitter {
     });
 
     this.isRunning = true;
+    this.emit('started');
 
     this.shell.onData((data: string) => {
       this.logBuffer.push(data);
@@ -44,7 +47,10 @@ class PtyManager extends EventEmitter {
       this.shell = null;
       this.stats = { players: '--', playerList: [] };
       this.emit('exit', exitCode);
-      setTimeout(() => this.start(jarPath, workDir), 10000);
+      if (!this.manuallyStopped) {
+        setTimeout(() => this.start(jarPath, workDir), 10000);
+      }
+      this.manuallyStopped = false;
     });
   }
 
@@ -80,6 +86,7 @@ class PtyManager extends EventEmitter {
 
   stop() {
     if (this.shell && this.isRunning) {
+      this.manuallyStopped = true;
       this.shell.write('stop\r');
     }
   }

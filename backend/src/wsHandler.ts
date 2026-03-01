@@ -3,22 +3,31 @@ import { IncomingMessage } from 'http';
 import { ptyManager } from './ptyManager';
 import { verifyToken } from './auth';
 
+function broadcast(wss: WebSocketServer, payload: object) {
+  const msg = JSON.stringify(payload);
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(msg);
+    }
+  });
+}
+
 export function setupWebSocket(wss: WebSocketServer) {
   ptyManager.on('output', (data: string) => {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ type: 'output', data }));
-      }
-    });
+    broadcast(wss, { type: 'output', data });
+  });
+
+  ptyManager.on('started', () => {
+    broadcast(wss, { type: 'status', running: true });
+  });
+
+  ptyManager.on('exit', () => {
+    broadcast(wss, { type: 'status', running: false });
   });
 
   // 推送即時狀態給所有客戶端
   ptyManager.on('stats', (stats) => {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ type: 'stats', data: stats }));
-      }
-    });
+    broadcast(wss, { type: 'stats', data: stats });
   });
 
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {

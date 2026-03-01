@@ -3,14 +3,17 @@ import fs from 'fs';
 import path from 'path';
 
 const router = Router();
-const MC_DIR = process.env.WORK_DIR || '/mc';
+const MC_DIR = path.resolve(process.env.WORK_DIR || '/mc');
 
 router.get('/files', (req, res) => {
   const reqPath = (req.query.path as string) || '/';
-  const fullPath = path.join(MC_DIR, reqPath);
+  // Strip leading slash so path.resolve doesn't treat it as a drive-root path on Windows
+  const normalized = reqPath.startsWith('/') ? reqPath.slice(1) : reqPath;
+  const fullPath = path.resolve(MC_DIR, normalized);
 
-  // 防止路徑穿越攻擊
-  if (!fullPath.startsWith(MC_DIR)) {
+  // 防止路徑穿越攻擊（相容 Windows / Linux）
+  const relative = path.relative(MC_DIR, fullPath);
+  if (relative.startsWith('..') || path.isAbsolute(relative)) {
     res.status(403).json({ error: '禁止存取' });
     return;
   }
