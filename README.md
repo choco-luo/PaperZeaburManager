@@ -9,7 +9,7 @@
 
 2. Zeabur 購買一台2vCPU | 8GB的專有主機
 
-> 硬體配置會不夠把Minecraft Server開起來。
+> 免費叢集的硬體配置不夠把Minecraft Server開起來，很容易在世界生成時卡住。
 >
 > (PZM完全針對使用Zeabur架設的情況，不維護其他平台的運作)
 
