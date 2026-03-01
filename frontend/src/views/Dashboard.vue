@@ -75,21 +75,7 @@ function logout() {
       <!-- 主內容 -->
       <main class="flex-1 flex flex-col overflow-hidden" style="background: #DEE3E2;">
         <!-- 頂部狀態列 -->
-        <header class="flex items-center justify-between px-8 py-4 shrink-0" style="border-bottom: 1px solid #B6C8CF;">
-          <div class="flex gap-6">
-            <div class="flex items-center gap-2">
-              <span class="text-sm" style="color: #4F5158;">TPS:</span>
-              <span class="text-sm" style="color: #7B8791;">{{ stats.tps }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm" style="color: #4F5158;">玩家:</span>
-              <span class="text-sm" style="color: #7B8791;">{{ stats.players }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm" style="color: #4F5158;">記憶體:</span>
-              <span class="text-sm" style="color: #7B8791;">{{ stats.memory }}</span>
-            </div>
-          </div>
+        <header class="flex items-center justify-end px-8 py-4 shrink-0" style="border-bottom: 1px solid #B6C8CF;">
           <button
             @click="logout"
             class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all"

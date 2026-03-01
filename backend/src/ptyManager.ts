@@ -8,9 +8,7 @@ class PtyManager extends EventEmitter {
   private readonly MAX_BUFFER = 1000;
 
   private stats = {
-    tps: '--' as string,
     players: '--' as string,
-    memory: '--' as string,
     playerList: [] as string[],
   };
 
@@ -44,41 +42,30 @@ class PtyManager extends EventEmitter {
       console.log(`PaperMC exited with code ${exitCode}`);
       this.isRunning = false;
       this.shell = null;
-      this.stats = { tps: '--', players: '--', memory: '--', playerList: [] };
+      this.stats = { players: '--', playerList: [] };
       this.emit('exit', exitCode);
       setTimeout(() => this.start(jarPath, workDir), 10000);
     });
   }
 
   private parseStats(data: string) {
-    // 解析 TPS
-    const tpsMatch = data.match(/TPS from last 1m, 5m, 15m: [\§a-z]*(\d+\.?\d*)/i);
-    if (tpsMatch) {
-      this.stats.tps = parseFloat(tpsMatch[1]).toFixed(1);
-      this.emit('stats', this.stats);
-    }
-
-    // 解析玩家數
-    const playersMatch = data.match(/There are (\d+) of a max of (\d+) players online/);
-    if (playersMatch) {
-      this.stats.players = `${playersMatch[1]}/${playersMatch[2]}`;
-      const namesPart = data.split(':').slice(-1)[0];
-      if (namesPart && namesPart.trim().length > 0) {
-        this.stats.playerList = namesPart
-          .trim()
-          .split(',')
-          .map(n => n.trim())
-          .filter(n => n.length > 0);
-      } else {
-        this.stats.playerList = [];
+    // 玩家加入
+    const joinMatch = data.match(/(\w+) joined the game/);
+    if (joinMatch) {
+      const name = joinMatch[1];
+      if (!this.stats.playerList.includes(name)) {
+        this.stats.playerList.push(name);
+        this.stats.players = `${this.stats.playerList.length}/?`;
+        this.emit('stats', this.stats);
       }
-      this.emit('stats', this.stats);
     }
 
-    // 解析記憶體
-    const memMatch = data.match(/(\d+)\/(\d+) MB/i);
-    if (memMatch) {
-      this.stats.memory = `${memMatch[1]}MB`;
+    // 玩家離開
+    const leaveMatch = data.match(/(\w+) left the game/);
+    if (leaveMatch) {
+      const name = leaveMatch[1];
+      this.stats.playerList = this.stats.playerList.filter(n => n !== name);
+      this.stats.players = `${this.stats.playerList.length}/?`;
       this.emit('stats', this.stats);
     }
   }
