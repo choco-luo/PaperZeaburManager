@@ -24,7 +24,13 @@ export async function verifyLogin(
   const users = getUsers();
   const storedPassword = users[username];
   if (!storedPassword) return null;
-  if (password !== storedPassword) return null;
+
+  // 支援 bcrypt hash（$2b$ 或 $2a$ 開頭）與明文兩種格式
+  const isBcrypt = storedPassword.startsWith('$2b$') || storedPassword.startsWith('$2a$');
+  const isValid = isBcrypt
+    ? await bcrypt.compare(password, storedPassword)
+    : password === storedPassword;
+  if (!isValid) return null;
 
   const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '7d' });
   return token;

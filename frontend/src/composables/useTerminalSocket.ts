@@ -12,6 +12,7 @@ export function useTerminalSocket(url: string) {
   const isServerRunning = ref(false)
   const stats = ref({ players: '--', playerList: [] as string[] })
   const listeners = new Set<(msg: WsMessage) => void>()
+  let shouldReconnect = true
 
   function connect() {
     const token = localStorage.getItem('token') || ''
@@ -30,6 +31,12 @@ export function useTerminalSocket(url: string) {
         if (msg.type === 'stats') {
           stats.value = msg.data
         }
+        if (msg.type === 'error' && msg.message === '未授權') {
+          shouldReconnect = false
+          localStorage.removeItem('token')
+          window.location.href = '/login'
+          return
+        }
         listeners.forEach((fn) => fn(msg))
       } catch (e) {
         console.error('Parse error:', e)
@@ -38,7 +45,9 @@ export function useTerminalSocket(url: string) {
 
     ws.value.onclose = () => {
       isConnected.value = false
-      setTimeout(connect, 3000)
+      if (shouldReconnect) {
+        setTimeout(connect, 3000)
+      }
     }
 
     ws.value.onerror = (err) => {
@@ -64,6 +73,7 @@ export function useTerminalSocket(url: string) {
   }
 
   onUnmounted(() => {
+    shouldReconnect = false
     ws.value?.close()
   })
 
