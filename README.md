@@ -2,8 +2,7 @@ PZM v1.0
 
 在經過數次測試Zeabur環境如何搭建管理Minecraft Server後，PZM已經可以正式公布使用。
 
-<img width="1699" height="1172" alt="000234" src="https://github.com/user-attachments/assets/264200da-d7d1-4a2e-b1e7-defecb4e69b5" />
----
+![pzm_concept_art](https://github.com/user-attachments/assets/ac0fca1d-0f70-41bd-86e8-0edd42c5b09a)
 
 ## 📦v1.0架設方式
 1. 準備好需要使用的伺服器檔案(Bukkit、Spigot、Paper、Fabric...)
