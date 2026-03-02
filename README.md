@@ -1,6 +1,6 @@
 ## PaperZeaburManager(PZM) | v1.0
 
-在經過數次測試Zeabur環境如何搭建管理Minecraft Server後，PZM已經可以正式公布使用。
+專為Zeabur部署的PaperMC伺服器管理介面，提供網頁版終端機和伺服器管理功能，使用者只需帶入自己的Docker Volume即可讓後端服務運作。
 
 ![pzm_concept_art](https://github.com/user-attachments/assets/ac0fca1d-0f70-41bd-86e8-0edd42c5b09a)
 
