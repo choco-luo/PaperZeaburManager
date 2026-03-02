@@ -1,6 +1,6 @@
 ## PaperZeaburManager(PZM) | v1.0
 
-專為Zeabur部署的PaperMC伺服器管理介面，提供網頁版終端機和伺服器管理功能，使用者只需帶入自己的Docker Volume即可讓後端服務運作。
+PaperMC伺服器部署於Zeabur時可以使用簡單使用的管理介面，提供WEB終端機和伺服器檔案管理功能，使用者只需帶入自己的Docker Volume即可讓後端服務運作，不需要寫任何code就能使用。
 
 ![pzm_concept_art](https://github.com/user-attachments/assets/ac0fca1d-0f70-41bd-86e8-0edd42c5b09a)
 
