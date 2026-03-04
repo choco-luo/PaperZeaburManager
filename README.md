@@ -2,7 +2,7 @@
 
 PaperMC伺服器部署於Zeabur時可以使用的管理介面，提供WEB終端機和伺服器檔案管理功能，使用者只需帶入自己的Docker Volume即可讓後端服務運作，不需要寫任何code就能使用。
 
-![pzm_concept_art](https://github.com/user-attachments/assets/ac0fca1d-0f70-41bd-86e8-0edd42c5b09a)
+![pzm_concept_art](https://github.com/user-attachments/assets/60954851-3084-4f23-b498-27bd51a3b2ed)
 
 ## 📦v1.0架設方式
 1. 準備好需要使用的伺服器檔案(Bukkit、Spigot、Paper、Fabric...)
