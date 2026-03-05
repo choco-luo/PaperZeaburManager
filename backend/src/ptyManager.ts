@@ -61,7 +61,7 @@ class PtyManager extends EventEmitter {
       const name = joinMatch[1];
       if (!this.stats.playerList.includes(name)) {
         this.stats.playerList.push(name);
-        this.stats.players = `${this.stats.playerList.length}/?`;
+        this.stats.players = `${this.stats.playerList.length}`;
         this.emit('stats', this.stats);
       }
     }
@@ -71,7 +71,7 @@ class PtyManager extends EventEmitter {
     if (leaveMatch) {
       const name = leaveMatch[1];
       this.stats.playerList = this.stats.playerList.filter(n => n !== name);
-      this.stats.players = `${this.stats.playerList.length}/?`;
+      this.stats.players = `${this.stats.playerList.length}`;
       this.emit('stats', this.stats);
     }
   }

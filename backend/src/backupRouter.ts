@@ -37,7 +37,7 @@ router.get('/backups', (req, res) => {
         return {
           name,
           size: stat.size,
-          createdAt: stat.birthtime.toISOString(),
+          createdAt: stat.mtime.toISOString(),
         };
       })
       .sort((a, b) => b.name.localeCompare(a.name)); // 最新在前
