@@ -13,12 +13,12 @@ class PtyManager extends EventEmitter {
     playerList: [] as string[],
   };
 
-  start(jarPath: string, workDir: string) {
+  start(jarPath: string, workDir: string, maxMemory = '2G', minMemory = '1G') {
     if (this.isRunning) return;
     this.manuallyStopped = false;
 
     this.shell = pty.spawn('java', [
-      '-Xmx2G', '-Xms1G',
+      `-Xmx${maxMemory}`, `-Xms${minMemory}`,
       '-jar', jarPath,
       '--nogui'
     ], {
@@ -48,7 +48,7 @@ class PtyManager extends EventEmitter {
       this.stats = { players: '--', playerList: [] };
       this.emit('exit', exitCode);
       if (!this.manuallyStopped) {
-        setTimeout(() => this.start(jarPath, workDir), 10000);
+        setTimeout(() => this.start(jarPath, workDir, maxMemory, minMemory), 10000);
       }
       this.manuallyStopped = false;
     });

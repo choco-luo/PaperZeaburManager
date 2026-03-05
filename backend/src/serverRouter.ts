@@ -12,6 +12,9 @@ router.post('/server/start', (req, res) => {
     return;
   }
 
+  const maxMemory: string = req.body?.maxMemory || '2G';
+  const minMemory: string = req.body?.minMemory || '1G';
+
   let jarPath: string;
 
   // 前端傳 jar 檔名（不含路徑），由後端接上 WORK_DIR
@@ -47,7 +50,7 @@ router.post('/server/start', (req, res) => {
   }
 
   try {
-    ptyManager.start(jarPath, WORK_DIR);
+    ptyManager.start(jarPath, WORK_DIR, maxMemory, minMemory);
     res.json({ ok: true, jarPath });
   } catch (err: any) {
     console.error('啟動失敗:', err);

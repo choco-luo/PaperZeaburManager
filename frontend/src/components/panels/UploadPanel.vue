@@ -31,6 +31,9 @@ const startError = ref('')
 const stoppingServer = ref(false)
 const starting = ref(false)
 
+const maxMemory = ref('2G')
+const minMemory = ref('1G')
+
 const token = () => localStorage.getItem('token') || ''
 
 // ── 載入已部署 jar 清單 ──────────────────────────────
@@ -71,7 +74,10 @@ async function stopServer() {
 async function startServer() {
   startError.value = ''
   starting.value = true
-  const body = selectedJar.value ? { jar: selectedJar.value } : {}
+  const body: Record<string, string> = {}
+  if (selectedJar.value) body.jar = selectedJar.value
+  body.maxMemory = maxMemory.value
+  body.minMemory = minMemory.value
   try {
     const res = await fetch(`${API_URL}/api/server/start`, {
       method: 'POST',
@@ -237,20 +243,44 @@ onMounted(() => loadJars())
         </span>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-col gap-3">
         <select
           v-model="selectedJar"
-          class="flex-1 px-3 py-2 rounded-xl text-sm"
+          class="w-full px-3 py-2 rounded-xl text-sm"
           style="background: #fff; border: 1px solid #B6C8CF; color: #4F5158;"
         >
           <option v-for="jar in jars" :key="jar" :value="jar">{{ jar }}</option>
         </select>
 
+        <!-- 記憶體設定 -->
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 flex-1">
+            <label class="text-xs shrink-0" style="color: #7B8791;">最大記憶體</label>
+            <input
+              v-model="maxMemory"
+              type="text"
+              placeholder="如: 2G 或 512M"
+              class="flex-1 px-3 py-1.5 rounded-lg text-sm"
+              style="background: #fff; border: 1px solid #B6C8CF; color: #4F5158;"
+            />
+          </div>
+          <div class="flex items-center gap-2 flex-1">
+            <label class="text-xs shrink-0" style="color: #7B8791;">最小記憶體</label>
+            <input
+              v-model="minMemory"
+              type="text"
+              placeholder="如: 1G 或 512M"
+              class="flex-1 px-3 py-1.5 rounded-lg text-sm"
+              style="background: #fff; border: 1px solid #B6C8CF; color: #4F5158;"
+            />
+          </div>
+        </div>
+
         <button
           @click="startServer"
           :disabled="isServerRunning || starting"
-          class="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-40"
-          style="background: #4F5158; color: #F8F9F9; white-space: nowrap;"
+          class="flex items-center justify-center gap-2 w-full px-5 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-40"
+          style="background: #4F5158; color: #F8F9F9;"
         >
           <Loader2 v-if="starting" :size="14" class="animate-spin" />
           <Play v-else :size="14" />
