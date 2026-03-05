@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 2 * 1024 * 1024 * 1024 }, // 2 GB
+  limits: { fileSize: 5 * 1024 * 1024 * 1024 }, // 單次最大 5 GB
   fileFilter: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== '.zip' || file.mimetype !== 'application/zip' && file.mimetype !== 'application/x-zip-compressed') {

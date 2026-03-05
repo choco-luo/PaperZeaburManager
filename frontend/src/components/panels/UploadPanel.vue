@@ -366,7 +366,8 @@ onMounted(() => loadJars())
         <Upload :size="32" style="color: #B6C8CF;" />
         <div class="text-center">
           <p class="text-sm font-medium" style="color: #4F5158;">拖曳 .zip 到這裡</p>
-          <p class="text-xs mt-0.5" style="color: #7B8791;">或點擊選取檔案（最大 2 GB）</p>
+          <p class="text-xs mt-0.5" style="color: #7B8791;">或點擊選取檔案</p>
+          <p class="text-xs mt-0.5" style="color: #7B8791;">(單次最大 5 GB，超過請分批上傳)</p>
         </div>
         <input type="file" accept=".zip" class="hidden" @change="onFileInput" />
       </label>
