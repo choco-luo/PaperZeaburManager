@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { AlertTriangle, Upload, CheckCircle, Loader2, Play } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -31,8 +31,11 @@ const startError = ref('')
 const stoppingServer = ref(false)
 const starting = ref(false)
 
-const maxMemory = ref('2G')
-const minMemory = ref('1G')
+const maxMemory = ref(Number(localStorage.getItem('mc_maxMemoryMB') ?? '2048'))
+const minMemory = ref(Number(localStorage.getItem('mc_minMemoryMB') ?? '1024'))
+
+watch(maxMemory, (v) => localStorage.setItem('mc_maxMemoryMB', String(v)))
+watch(minMemory, (v) => localStorage.setItem('mc_minMemoryMB', String(v)))
 
 const token = () => localStorage.getItem('token') || ''
 
@@ -76,8 +79,8 @@ async function startServer() {
   starting.value = true
   const body: Record<string, string> = {}
   if (selectedJar.value) body.jar = selectedJar.value
-  body.maxMemory = maxMemory.value
-  body.minMemory = minMemory.value
+  body.maxMemory = `${maxMemory.value}M`
+  body.minMemory = `${minMemory.value}M`
   try {
     const res = await fetch(`${API_URL}/api/server/start`, {
       method: 'POST',
@@ -256,23 +259,31 @@ onMounted(() => loadJars())
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2 flex-1">
             <label class="text-xs shrink-0" style="color: #7B8791;">最大記憶體</label>
-            <input
-              v-model="maxMemory"
-              type="text"
-              placeholder="如: 2G 或 512M"
-              class="flex-1 px-3 py-1.5 rounded-lg text-sm"
-              style="background: #fff; border: 1px solid #B6C8CF; color: #4F5158;"
-            />
+            <div class="flex items-center flex-1 rounded-lg overflow-hidden" style="border: 1px solid #B6C8CF;">
+              <input
+                v-model.number="maxMemory"
+                type="number"
+                min="512"
+                step="512"
+                class="flex-1 px-3 py-1.5 text-sm outline-none"
+                style="background: #fff; color: #4F5158;"
+              />
+              <span class="px-2 text-xs shrink-0" style="background: #DEE3E2; color: #7B8791; align-self: stretch; display: flex; align-items: center;">MB</span>
+            </div>
           </div>
           <div class="flex items-center gap-2 flex-1">
             <label class="text-xs shrink-0" style="color: #7B8791;">最小記憶體</label>
-            <input
-              v-model="minMemory"
-              type="text"
-              placeholder="如: 1G 或 512M"
-              class="flex-1 px-3 py-1.5 rounded-lg text-sm"
-              style="background: #fff; border: 1px solid #B6C8CF; color: #4F5158;"
-            />
+            <div class="flex items-center flex-1 rounded-lg overflow-hidden" style="border: 1px solid #B6C8CF;">
+              <input
+                v-model.number="minMemory"
+                type="number"
+                min="512"
+                step="512"
+                class="flex-1 px-3 py-1.5 text-sm outline-none"
+                style="background: #fff; color: #4F5158;"
+              />
+              <span class="px-2 text-xs shrink-0" style="background: #DEE3E2; color: #7B8791; align-self: stretch; display: flex; align-items: center;">MB</span>
+            </div>
           </div>
         </div>
 

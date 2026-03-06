@@ -54,9 +54,14 @@ class PtyManager extends EventEmitter {
     });
   }
 
+  private stripAnsi(str: string): string {
+    return str.replace(/\u001b\[[0-9;]*[A-Za-z]/g, '');
+  }
+
   private parseStats(data: string) {
+    const clean = this.stripAnsi(data);
     // 玩家加入
-    const joinMatch = data.match(/(\w+) joined the game/);
+    const joinMatch = clean.match(/(\w+) joined the game/);
     if (joinMatch) {
       const name = joinMatch[1];
       if (!this.stats.playerList.includes(name)) {
@@ -67,7 +72,7 @@ class PtyManager extends EventEmitter {
     }
 
     // 玩家離開
-    const leaveMatch = data.match(/(\w+) left the game/);
+    const leaveMatch = clean.match(/(\w+) left the game/);
     if (leaveMatch) {
       const name = leaveMatch[1];
       this.stats.playerList = this.stats.playerList.filter(n => n !== name);
