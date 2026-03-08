@@ -53,5 +53,6 @@ VITE_API_URL=https://localhost:3000
 <img width="415" height="330" alt="backend-volume" src="https://github.com/user-attachments/assets/4c9212b8-4244-4080-9f73-4d070592f899" />
 
 7. 接第六點，再跳到後端服務新增一個TCP連線方式，PORT為`25565`
+<img width="659" height="477" alt="289350829035" src="https://github.com/user-attachments/assets/e20e8a83-33bf-41d9-889f-ee47cb6eadce" />
 
 8. 進入前端的管理介面登入帳號，並上傳打包好的伺服器檔案
