@@ -49,7 +49,7 @@ VITE_API_URL=https://localhost:3000
 6. 回到後端服務，在硬碟選項新增一個硬碟並配置正確路徑
 > 硬碟每次掛載/移除都會重新啟動服務。
 > 伺服器的最新進度使用Volume保存，請注意備份。
-<img width="830" height="659" alt="backend-volume" src="https://github.com/user-attachments/assets/4c9212b8-4244-4080-9f73-4d070592f899" />
+<img width="415" height="330" alt="backend-volume" src="https://github.com/user-attachments/assets/4c9212b8-4244-4080-9f73-4d070592f899" />
 
 7. 接第六點，再跳到後端服務新增一個TCP連線方式，PORT為`25565`
 
