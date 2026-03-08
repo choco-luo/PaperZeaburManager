@@ -54,9 +54,10 @@ VITE_API_URL=https://localhost:3000
 
 7. 接第六點，再跳到後端網路服務新增一個TCP連線方式，PORT為`25565`
 <img width="659" height="477" alt="289350829035" src="https://github.com/user-attachments/assets/e20e8a83-33bf-41d9-889f-ee47cb6eadce" />
+
 完成註冊後會得到新的TCP連線點以及對外用的PORT (建議再套一層DNS解析用於公開連線)
 
 8. 進入前端的管理介面登入管理員帳號，並上傳打包好的伺服器檔案
 > 請確認Volume已經有掛載好並且路徑正確，避免上傳先後順序問題導致被覆蓋。
 
-[完成，恭喜成功架設好Zeabur環境上的PaperMC伺服器]
+[ 完成，恭喜成功架設好Zeabur環境上的PaperMC伺服器 ]
